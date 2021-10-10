@@ -64,6 +64,125 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-My-Test" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/10/10/My-Test/" class="article-date">
+  <time datetime="2021-10-10T10:24:20.000Z" itemprop="datePublished">2021-10-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/10/10/My-Test/">My Test</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="组件系列"><a href="#组件系列" class="headerlink" title="组件系列"></a>组件系列</h2><h4 id="四大组件"><a href="#四大组件" class="headerlink" title="四大组件"></a>四大组件</h4><h6 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h6><p>生命周期：onCreate()-&gt;onStart()-&gt;onResume()-&gt;onPause()-&gt;onStop()-&gt;onDestroy()</p>
+<p>启动：ContextImpl.startActivity()-&gt;Instrumentation-&gt;ActivityTaskManagerService（处理当前activity退后台）-&gt;ActivityStarter(解析Intent，权限检查)-&gt;ActivityStack（创建进程，绑定进程）-&gt;ActivityStackSupervisor（设置生命周期）-&gt;ApplicationThread-&gt;ActivityThread-&gt;分发消息</p>
+<h6 id="Service："><a href="#Service：" class="headerlink" title="Service："></a>Service：</h6><p>生命周期：</p>
+<p>start:onCreate()-&gt;onStartCommond()-&gt;onDestroy()</p>
+<p>bind:onCreate()-&gt;onBind()-&gt;onUnBInd()-&gt;onDestroy()</p>
+<h6 id="Broadcast："><a href="#Broadcast：" class="headerlink" title="Broadcast："></a>Broadcast：</h6><p>类型：普通、粘性、有序、无序。</p>
+<p>粘性广播：如果有该类型广播发出，则之后注册了的接收器马上能直接受到。</p>
+<p>有序广播：会根据Receivers的优先级按顺序发放，中间可以进行取消和拦截中止发放。该类型广播会造成anr，前台10s未处理完或者后台60s未处理完被视为无响应。</p>
+<p>静态注册：始终能够接收到，可以作为自启动的方法。</p>
+<p>动态注册：需要代码动态注册之后才能接收到。</p>
+<h4 id="组件启动"><a href="#组件启动" class="headerlink" title="组件启动"></a>组件启动</h4><h2 id="UI系列"><a href="#UI系列" class="headerlink" title="UI系列"></a>UI系列</h2><h4 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h4><h4 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h4><h6 id="生命周期："><a href="#生命周期：" class="headerlink" title="生命周期："></a>生命周期：</h6><p>相比于Activity增加了onAttach()、onDetach()、onCreateView()、onViewCreated()、onActivityCreated()、onDestroyView()</p>
+<h4 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h4><h5 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h5><p>这种模式的view和controller往往都在Activity中，这样造成Activity逻辑较为繁杂，可读性差且容易出问题（内存泄露等等）。</p>
+<h5 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h5><p>相比于MVC，这种模式将Activity中的业务逻辑内容抽出来放到Presenter中，V和C分别实现IView和IPresenter接口。各自分别拥有对方的对象，这样Activity或Fragment只负责处理跟生命周期有关的内容。但是这种模式要注意destroy的时候及时解引用，否则会造成内存泄露。</p>
+<h5 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h5><h5 id="px、dpi、dp"><a href="#px、dpi、dp" class="headerlink" title="px、dpi、dp"></a>px、dpi、dp</h5><p>px：物理像素点</p>
+<p>dpi：像素密度，通过调整dpi可调整显示大小</p>
+<p>dp：抽象出来的用于描述手机尺寸百分比的单位 1dp = dpi/160 px</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h4 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h4><h4 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h4><h6 id="定时炸弹类型："><a href="#定时炸弹类型：" class="headerlink" title="定时炸弹类型："></a>定时炸弹类型：</h6><p>Service、Broadcast、Provider。这几个都是通过AMS协助进行，当AMS收到这些请求准备分发任务时，会埋下炸弹，在给定时间内收不到该任务已完成的信号则会爆炸触发ANR。</p>
+<h6 id="扫雷类型："><a href="#扫雷类型：" class="headerlink" title="扫雷类型："></a>扫雷类型：</h6><p>Input事件，不同于前面的，input时间检测是否是ANR的条件是处理下一次input事件时，本次input处理是否超时（5S），如果没有下一次input事件到来，本次事件不会触发ANR。</p>
+<h2 id="IPC"><a href="#IPC" class="headerlink" title="IPC"></a>IPC</h2><h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><h5 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h5><p>ADJ值越小，优先级越高。</p>
+<p>0：前台进程</p>
+<p>100：可见进程</p>
+<p>200：可感知进程</p>
+<p>500：服务进程</p>
+<h5 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h5><p>安卓中每个进程运行的内存都可以分为用户空间+内核空间。用户空间是无法直接通信的，但是内核空间是共享的，可以借助这点做到进程间通信。</p>
+<h5 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h5><h5 id="Messenger"><a href="#Messenger" class="headerlink" title="Messenger"></a>Messenger</h5><p>Messenger是一种将Binder封装好基于message的进程通信机制。</p>
+<p>它具有以下优点：</p>
+<p>1.不需要手写Binder或者使用Aidl。</p>
+<p>2.可以使用回调达到服务端跟客户端交互。</p>
+<p>3.基于message，条理简单清晰。</p>
+<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><h5 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h5><p>TreadLocal</p>
+<p>Looper.prepare</p>
+<h6 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h6><p>事件的封装，message对象有个handler类型的target变量。发送消息时，message.target被赋为该handler。</p>
+<h6 id="MessageQueue"><a href="#MessageQueue" class="headerlink" title="MessageQueue"></a>MessageQueue</h6><p>每个Looper对象有一个MessageQueue。用于存放消息</p>
+<h6 id="Looper"><a href="#Looper" class="headerlink" title="Looper"></a>Looper</h6><p>每个线程中只有一个，通过ThreadLocal实现。Looper.prepare、Looper.loop实现循环消费消息队列中的消息。</p>
+<h5 id="AsyncTask"><a href="#AsyncTask" class="headerlink" title="AsyncTask"></a>AsyncTask</h5><p>AsyncTask是Android中提供的一种实现异步任务较为简便的类。在某些情况下使用会优于Handler+Thread（采用了线程池）。</p>
+<p>其最常见的用法就是异步刷新界面。</p>
+<p>AsyncTask使用了设计模式中的模版方法模式，其为我们定义好了一系列完成异步任务需要的方法。使用的时候只要按需继承并重写这些方法即可。</p>
+<p>主要的方法：</p>
+<p>execute() //模版入口，开始执行异步任务，ui主线程中直接调用。</p>
+<p>onPreExecute() //执行之前会调用此方法，可以显示一些初始化的内容。</p>
+<p>doInBackground() //具体的耗时任务内容，该方法中的内容会在子线程中进行，在该方法中使用updateProgress会回调onProgressUpdate用于异步更新界面。</p>
+<p>onProgressUpdate() //其接受的参数为updateProgress中传入的参数，在该方法中实现界面更新。</p>
+<p>onPostExecute() //doInBackground结束时，此方法会被调用。</p>
+<p>除了doInBackground，其他方法都在子线程中。</p>
+<p>需要注意的问题：</p>
+<p>内存泄露，由于AsyncTask经常被定义为非静态内部类使用，所以其很容易造成内存泄露的情况。主要解决方法有三种：</p>
+<p>1.在activity销毁时调用cancle去终止AsyncTask。</p>
+<p>2.使用WeakReference，让非静态内部类持有activity的弱引用。</p>
+<p>3.定义为静态内部类。</p>
+<h5 id="IntentService"><a href="#IntentService" class="headerlink" title="IntentService"></a>IntentService</h5><p>IntentService是内部封装好的在非主线程运行的service。其在业务逻辑运行完了之后会自动stop，故其不支持bind。</p>
+<h2 id="绘制系列"><a href="#绘制系列" class="headerlink" title="绘制系列"></a>绘制系列</h2><h4 id="Choreographer"><a href="#Choreographer" class="headerlink" title="Choreographer"></a>Choreographer</h4><p>能够造成页面重绘的方法：requestLayout（onMeasure,onLayout,onDraw）,invalidate(onDraw),postInvalidate.这些方法最终会调到ViewRootImpl.scheduleTraversals.然后ViewRootImpl中的Choreographer对象会向底层注册VSync监听，当VSync信号到来时，将上一帧的绘制结果送给surfaceFlinger，另外调用ViewRootImpl.performTraversals通知应用之后会开始下一帧的绘制（onMeasure,onLayout,onDraw）。这些动作的结果会进入Choreographer的相关队列，下一次信号到来时将这些打包发送给surfaceFlinger进行合成，SF再将合成结果传递给屏幕进行显示。</p>
+<p>ViewRootImpl和DecorView绑定</p>
+<p>Activity-&gt;Window-&gt;PhoneWindow-&gt;DecorView-&gt;contentView</p>
+<p>onCreate()：setContentView实例化了contentView</p>
+<p>onResume()：WindowManager.addView()会初始化一个ViewRootImpl，ViewRootImpl.setView()会调用DecorView.assignParent()该方法中会将mParent赋为ViewRootImpl实例</p>
+<h4 id="View"><a href="#View" class="headerlink" title="View"></a>View</h4><h5 id="事件分发与滑动冲突"><a href="#事件分发与滑动冲突" class="headerlink" title="事件分发与滑动冲突"></a>事件分发与滑动冲突</h5><h6 id="事件分发机制："><a href="#事件分发机制：" class="headerlink" title="事件分发机制："></a>事件分发机制：</h6><p>Activity,ViewGroup,View。</p>
+<p>Activity:通过dispatchTouchEvent默认向ViewGroup传递事件，ViewGroup.dispatchTouchEvent的结果为false则表示子级都处理不了，则调用onTouchEvent.最后无论结果如何都结束。</p>
+<p>ViewGroup：dispatchTouchEvent默认调用onInterceptTouchEvent决定是否拦截此事件。为true则不向下分发，调用onTouchEvent的结果直接返回给activity，为false则表示交给子级View来处理，返回View.dispatchTouchEvent的结果给activity。</p>
+<p>View：默认调用onTouchEvent的结果返回给activity。</p>
+<h6 id="滑动冲突："><a href="#滑动冲突：" class="headerlink" title="滑动冲突："></a>滑动冲突：</h6><p>1.重写ViewGroup的onInterceptTouchEvent决定什么情况下拦截。</p>
+<p>2.调用View.requestDisallowInterceptTouchEvent禁止ViewGroup拦截事件。</p>
+<h5 id="ListView、RecyclerView"><a href="#ListView、RecyclerView" class="headerlink" title="ListView、RecyclerView"></a>ListView、RecyclerView</h5><p>listview双重缓存，不显示在当前屏幕的item放入缓存中，使用的时候根据position去取。</p>
+<p>RecyclerView：</p>
+<p>使用方法：</p>
+<p>recyclerview.setLayoutManager;</p>
+<p>recyclerview.setAdapter;</p>
+<p>自定义item.xml,自定义adpter，根据item自定义ViewHolder，重写onCreateViewHolder（根据item.xml加载view，根据view创建VH返回）、onBindViewHolder（根据数据设置对应的内容）方法。</p>
+<p>1.四重缓存机制</p>
+<p>mGrabView、mCachedView（默认长度为2，可以手动调整大小。根据position取，可以直接使用）、mExtentionView（需要实现，较少用到）、mPoolView（根据type取holder，使用时需要bindviewholder）。</p>
+<p>2.缓存中存放的是viewholder，避免了findviewbyid的耗时</p>
+<p>3.由于mCachedView，来回滑的效率非常高。</p>
+<p>3.notifyDataChanged可以单条通知，而不是全部通知</p>
+<h5 id="Canvas"><a href="#Canvas" class="headerlink" title="Canvas"></a>Canvas</h5><h2 id="系统服务"><a href="#系统服务" class="headerlink" title="系统服务"></a>系统服务</h2><h2 id="Android特色"><a href="#Android特色" class="headerlink" title="Android特色"></a>Android特色</h2><h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>Context是指应用运行程序上下文，是android app的大管家。Application，Activity，Service都继承自Context。</p>
+<p>一个app中的Context数=activity数+service数+1（Application）。Context家族实现过程采用了装饰者模式：</p>
+<h4 id="SparsArray、ArrayMap"><a href="#SparsArray、ArrayMap" class="headerlink" title="SparsArray、ArrayMap"></a>SparsArray、ArrayMap</h4><p>SparsArray用于存放key为int类型的键值对，由于内部是双重排序数组的机制，查找采用二分法。故相比于HashMap节省内存，查询呢效率有所降低。</p>
+<p>ArrayMap内部也是双重数组，一边存放key的hashcode，另一边存放的key-value键值对。也采用排序+二分法的方式，相比于SparsArray，其可以存放key为对象的键值对，且内存占用多了1/2。</p>
+<h4 id="Parceble"><a href="#Parceble" class="headerlink" title="Parceble"></a>Parceble</h4><h4 id="PendingIntent"><a href="#PendingIntent" class="headerlink" title="PendingIntent"></a>PendingIntent</h4><p>intent和requestCode决定一个pendingintent的唯一性。当pendingintent相同时，FLAG_CANCEL_CURRENT会使上一个失效，FLAG_UPDATE_CURRENT会更新上一个的内容。</p>
+<h4 id="SharedPreference"><a href="#SharedPreference" class="headerlink" title="SharedPreference"></a>SharedPreference</h4><h4 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h4><h5 id="Dalvik"><a href="#Dalvik" class="headerlink" title="Dalvik"></a>Dalvik</h5><p>引入了dex文件机制，dex相比于class，去除了冗余，更加节省内存</p>
+<h5 id="ART"><a href="#ART" class="headerlink" title="ART"></a>ART</h5><p>AOT</p>
+<p>在应用安装时dex2aot工具会将dex文件进一步预编译，生成一些可执行文件</p>
+<p>GC算法</p>
+<p>引用计数、<strong>标注清理</strong>、分代回收、<strong>复制</strong>。</p>
+<p>开发及调试优化</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/10/10/My-Test/" data-id="ckul2yrat0000iwwd72pt6pl9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-android" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/10/10/android/" class="article-date">
@@ -251,6 +370,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/10/10/My-Test/">My Test</a>
+          </li>
         
           <li>
             <a href="/2021/10/10/android/">(no title)</a>
